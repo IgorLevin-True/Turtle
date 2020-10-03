@@ -17,17 +17,17 @@ namespace _404
         private double x1, x2, x3, z1, z2, z3;
         private double[,] arr2 = new double[3, 3];
         private double[,] startArray = new double[3, 4];
-        private int iteration = 0, N=3;
-
+        private int iteration = 0, N = 3, R = 0, G = 0, B = 0;
         private double[,] ArrayGaus = new double[3, 3];
         private double[] RightM = new double[3];
+        private bool color=true;
 
         private void button1_Click(object sender, EventArgs e)
         {
             #region Проверка на вводные данные матрицы
             try
             {
-            fillArrayEasy();
+                fillArrayEasy();
             }
             catch (Exception)
             {
@@ -35,7 +35,7 @@ namespace _404
             }
             #endregion
 
-            if (radioButton1.Checked==true) 
+            if (radioButton1.Checked == true)
             {
                 iteration = 1;
                 textBox1.Clear();
@@ -44,26 +44,26 @@ namespace _404
 
                 #region Метод простых итераций
 
-            for(int i = 0; i< numericUpDown1.Value; i++)
-            {     
-                x1 = z1;
-                x2 = z2;
-                x3 = z3;
-                NextToEasy();
-            }
+                for (int i = 0; i < numericUpDown1.Value; i++)
+                {
+                    x1 = z1;
+                    x2 = z2;
+                    x3 = z3;
+                    NextToEasy();
+                }
 
                 fillAnswer();
 
-            #endregion
+                #endregion
             }// Если выбран Метод простых итераций
 
-            if (radioButton2.Checked==true)
+            if (radioButton2.Checked == true)
             {
                 iteration = 1;
                 textBox1.Clear();
                 ClearAnswer();
 
-                z1 = z2 = z3=1;
+                z1 = z2 = z3 = 1;
                 x1 = Math.Round(arr2[0, 0], 4);
                 x2 = Math.Round(arr2[1, 1], 4);
                 x3 = Math.Round(arr2[2, 2], 4);
@@ -88,9 +88,9 @@ namespace _404
                 ClearAnswer();
                 fillArrayGaus();
                 double[] answer = new double[3];
-                answer = Gauss(ArrayGaus,RightM);
-               
-                    textBox1.Text += $"X1 = {Math.Round(answer[0],4).ToString()}, X2 = {Math.Round(answer[1], 4).ToString()}, X3 = {Math.Round(answer[2], 4).ToString()}";
+                answer = Gauss(ArrayGaus, RightM);
+
+                textBox1.Text += $"X1 = {Math.Round(answer[0], 4).ToString()}, X2 = {Math.Round(answer[1], 4).ToString()}, X3 = {Math.Round(answer[2], 4).ToString()}";
                 valueX12.Text = Math.Round(answer[0], 4).ToString();
                 value22.Text = Math.Round(answer[1], 4).ToString();
                 value32.Text = Math.Round(answer[2], 4).ToString();
@@ -100,20 +100,23 @@ namespace _404
 
         }
 
-      
+
         public Form1()
         {
             InitializeComponent();
+            label6.ForeColor = Color.FromArgb(0,0,0);
+            timer1.Start();
+
         }
 
-        
+
         public void NextToEasy()
         {
-            z1 =Math.Round(arr2[0,0]-arr2[0,1]*x2-arr2[0,2]*x3,4);
-            z2= Math.Round(arr2[1,1]-arr2[1,0]*x1-arr2[1,2]*x3,4);
-            z3=Math.Round(arr2[2,2]-arr2[2,0]*x1-arr2[2,1]*x2,4);
+            z1 = Math.Round(arr2[0, 0] - arr2[0, 1] * x2 - arr2[0, 2] * x3, 4);
+            z2 = Math.Round(arr2[1, 1] - arr2[1, 0] * x1 - arr2[1, 2] * x3, 4);
+            z3 = Math.Round(arr2[2, 2] - arr2[2, 0] * x1 - arr2[2, 1] * x2, 4);
 
-            textBox1.Text = textBox1.Text + $"I={iteration}\t X1 = {z1},\t X2 = {z2},\t X3 = {z3}\t E={Math.Round(z1-x1,4)}\r\n";
+            textBox1.Text = textBox1.Text + $"I={iteration}\t X1 = {z1},\t X2 = {z2},\t X3 = {z3}\t E={Math.Round(z1 - x1, 4)}\r\n";
             iteration++;
 
 
@@ -127,6 +130,39 @@ namespace _404
             textBox1.Text = textBox1.Text + $"I={iteration}\t X1 = {z1},\t X2 = {z2},\t X3 = {z3}\t E={Math.Round(z1 - x1, 4)} \r\n";
             iteration++;
         }// Следующий шаг для Метода Зейделя
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            Random random = new Random();
+
+            if (color)
+            {
+                R +=1;
+                G += 1;
+                B += 0;
+                if (R==255 )
+                {
+                    color = false;
+                }
+
+            }
+            else
+            {
+                R -= 1;
+                G -= 1;
+                B -= 0;
+                if (R==1)
+                {
+                    color = true;
+                }
+            }
+
+            label6.ForeColor = Color.FromArgb(R,G,B);
+        
+        }
+
+       
+
         private void fillArrayEasy() 
         {
             arr2[0, 0] = double.Parse(m4.Text) / double.Parse(m1.Text);
